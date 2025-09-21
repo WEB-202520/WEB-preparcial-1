@@ -20,7 +20,7 @@ export function useAuthors() {
             setLoading(false)
             setError(null)
         } catch {
-            const error: Error = new Error('No pude cargar autores')
+            const error: Error = new Error('No se pudieron cargar los autores')
             setError( error )
         }
     }
