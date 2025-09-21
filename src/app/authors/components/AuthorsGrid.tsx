@@ -2,13 +2,14 @@
 
 import {useState} from 'react';
 import Image from 'next/image';
-import {Author} from '@/app/model/Author.interface';
+import {Author} from '@/model/Author.interface';
 import {useAuthors} from '@/app/authors/hooks/useAuthors';
 
-type Draft = Omit<Author, 'id'>
+type Draft = Omit<Author, 'id'> // crear tipo para autores sin ID para el update
 
 export const AuthorsGrid = () => {
-    const {authors, loading, error, update, remove} = useAuthors()
+    const {authors, updateAuthor, deleteAuthor} = useAuthors()
+    // useState para saber si se está editando algún autor. Solo se puede actualizar uno a la vez
     const [editingId, setEditingId] = useState<number | null>(null)
     const [draft, setDraft] = useState<Draft>({
         name: '', birthDate: '', description: '', image: ''
@@ -28,19 +29,20 @@ export const AuthorsGrid = () => {
         setEditingId(null)
     }
 
+    /**
+     * Cambiar los elementos del Draft cada vez que ocurra un cambio
+     * @param e
+     */
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target
-        setDraft(prev => ({...prev, [name]: value}))
+        const {name, value} = e.target // se extrae el cambio
+        setDraft(prev => ({...prev, [name]: value})) // se actualiza el draft, asegurándo que el cambio se vea reflejado
     }
 
     const onSave = async () => {
         if (editingId == null) return
-        await update(editingId, draft)
+        await updateAuthor(editingId, draft) // actualiza en el back
         setEditingId(null)
     }
-
-    if (loading) return <p className="m-10">Cargando…</p>
-    if (error) return <p className="m-10 text-red-600">{error}</p>
 
     return (
         <div className="grid flex-col md:grid-cols-3 gap-10 m-10 sm:grid-cols-1">
@@ -59,10 +61,10 @@ export const AuthorsGrid = () => {
                                        className="border p-2 rounded"/>
                                 <div className="flex gap-2">
                                     <button onClick={onSave}
-                                            className="border bg-blue-500 text-white rounded px-4 py-1">Guardar
+                                            className="border bg-blue-500 text-white rounded-xl px-4 py-1">Guardar
                                     </button>
                                     <button onClick={cancelEdit}
-                                            className="border bg-gray-200 rounded px-4 py-1">Cancelar
+                                            className="border bg-gray-200 dark:bg-gray-800 rounded-xl px-4 py-1">Cancelar
                                     </button>
                                 </div>
                             </div>
@@ -77,16 +79,12 @@ export const AuthorsGrid = () => {
                                 </div>
                                 <div className="mt-6 flex justify-center gap-2">
                                     <button onClick={() => startEdit(author)}
-                                            className="border bg-blue-200 font-bold rounded-xl px-4 py-1">
+                                            className="border bg-blue-200 dark:bg-blue-500 font-bold rounded-xl px-4 py-1">
                                         Editar
                                     </button>
                                     <button
                                         onClick={async () => {
-                                            try {
-                                                await remove(author.id)
-                                            } catch {
-                                                alert("No se pudo eliminar el autor")
-                                            }
+                                            await deleteAuthor(author.id)
                                         }}
                                         className="border bg-red-400 font-bold rounded-xl px-4 py-1"
                                     >
