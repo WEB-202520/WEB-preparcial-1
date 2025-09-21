@@ -11,8 +11,8 @@ export function useAuthors() {
 
     const getAuthors = async () => {
         try {
-            const res = await fetch(API, {cache: 'no-store'})
-            const data: Author[] = await res.json()
+            const response = await fetch(API, {cache: 'no-store'})
+            const data: Author[] = await response.json()
             setAuthors(data)
         } catch {
             throw new Error('No pude cargar autores')
@@ -25,30 +25,30 @@ export function useAuthors() {
     }, [])
 
     const postAuthor = async (a: Omit<Author, 'id'>) => {
-        const res = await fetch(API, {
+        const response = await fetch(API, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(a),
         })
-        if (!res.ok) throw new Error('Error creando autor')
+        if (!response.ok) throw new Error('Error creando autor')
         await getAuthors()
     }
 
     const updateAuthor = async (id: number, a: Omit<Author, 'id'>) => {
-        const res = await fetch(`${API}/${id}`, {
+        const response = await fetch(`${API}/${id}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(a),
         })
-        if (!res.ok) throw new Error('Error actualizando autor')
+        if (!response.ok) throw new Error('Error actualizando autor')
         await getAuthors()
     }
 
     const deleteAuthor = async (id: number) => {
         // asegurarnos de que es número, estaba causando errores lol
         const authorId = Number(id);
-        const res = await fetch(`${API}/${authorId}`, {method: 'DELETE'});
-        if (!res.ok) throw new Error('Error eliminando autor');
+        const response = await fetch(`${API}/${authorId}`, {method: 'DELETE'});
+        if (!response.ok) throw new Error('Error eliminando autor');
         // ok → sacamos de la lista
         setAuthors(prev => prev.filter(a => a.id !== authorId));
     };

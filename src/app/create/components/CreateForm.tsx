@@ -6,7 +6,8 @@ import {SubmitHandler, useForm} from 'react-hook-form'
 import {useRouter} from 'next/navigation'
 
 const schema = z.object({
-    birthDate: z.string(),
+    // se utiliza una expresión regular para validar el formato de la fecha y evitar problemas con el back
+    birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido. Usa YYYY-MM-DD'),
     name: z.string().min(1, 'Nombre requerido'),
     description: z.string().min(1, 'Descripción requerida'),
     image: z.string().url('Debe ser una URL'),
@@ -15,9 +16,10 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export const CreateForm = () => {
-    const router = useRouter()
 
-    const {register, handleSubmit, setError, reset, formState: {errors, isSubmitting}} =
+    const router = useRouter() // se utiliza el router para llevar al usuario a la página de autores tras crear uno nuevo
+
+    const {register, handleSubmit, setError, reset, formState: {errors, isSubmitting} } =
         useForm<FormFields>({
             defaultValues: {
                 image: 'https://images-na.ssl-images-amazon.com/images/I/81-Q4oeHicL.jpg'
@@ -34,15 +36,15 @@ export const CreateForm = () => {
             })
             if (!res.ok) throw new Error('Autor ya existe')
             reset()
-            router.push('/authors')
+            router.push('/authors') // volver a la pagina de autores, donde se podrá ver el nuevo autor xd
         } catch {
             setError('root', {message: 'No se pudo crear'})
         }
     }
 
     return (
-        <div className="flex flex-col m-2 items-center justify-center">
-            <form className="flex flex-col gap-3 mt-4 w-100" onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col m-4 items-center justify-center">
+            <form className="flex flex-col gap-3 mt-4 w-100 bg-gray-300 dark:bg-gray-700 p-5 rounded-lg border shadow-sm" onSubmit={handleSubmit(onSubmit)}>
 
                 <p>Nombre</p>
                 <input {...register('name')} type="text" placeholder="Name" className="border p-2 rounded-lg"/>

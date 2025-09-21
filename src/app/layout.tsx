@@ -28,18 +28,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <div className="border rounded-xl shadow-sm grid-cols-2 grid m-5 p-2 bg-gray-500 dark:bg-gray-800">
-          <h1 className="font-bold pl-10">Preparcial 1 - Adrian Velasquez 202222737</h1>
-          <nav className="justify-end gap-15 text-sm md:flex pr-10">
-              <Link href="/authors" className="text-xl font-bold">
-                  Authors
-              </Link>
-              <Link href="/create" className="text-xl font-bold">
-                  Create
-              </Link>
-          </nav>
+      <div className="fixed w-full">
+          <header className="border rounded-xl shadow-sm grid-cols-2 grid m-2 p-2 bg-gray-400/80 dark:bg-gray-800/80 ">
+              <h1 className="font-bold pl-10">Preparcial 1 - Adrian Velasquez 202222737</h1>
+              <nav className="justify-end gap-15 text-sm md:flex pr-10">
+                  <Link href="/authors" className="text-xl font-bold">
+                      Authors
+                  </Link>
+                  <Link href="/create" className="text-xl font-bold">
+                      Create
+                  </Link>
+              </nav>
+          </header>
       </div>
+      <div className="pt-10">
         {children}
+      </div>
       </body>
     </html>
   );

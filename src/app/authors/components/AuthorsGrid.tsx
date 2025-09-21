@@ -25,6 +25,10 @@ export const AuthorsGrid = () => {
         })
     }
 
+    const deleteButton = async ( id: number ) => {
+        await deleteAuthor( id )
+    }
+
     const cancelEdit = () => {
         setEditingId(null)
     }
@@ -47,9 +51,12 @@ export const AuthorsGrid = () => {
     return (
         <div className="grid flex-col md:grid-cols-3 gap-10 m-10 sm:grid-cols-1">
             {authors.map((author) => (
-                <div key={author.id} className="flex border rounded-lg shadow-sm">
+                <div key={author.id} className="flex border rounded-lg shadow-sm bg-gray-300 dark:bg-gray-700">
                     <div className="p-6 w-full">
+
+                        {/*Aquí la idea es determinar cuál autor se está editando, para mostrar su formulario y actualizar el Draft*/}
                         {editingId === author.id ? (
+                            // Si el autor está siendo editado, mostrar formulario
                             <div className="flex flex-col gap-2">
                                 <input name="name" value={draft.name} onChange={onChange}
                                        className="border p-2 rounded"/>
@@ -68,10 +75,14 @@ export const AuthorsGrid = () => {
                                     </button>
                                 </div>
                             </div>
+
+
                         ) : (
+
+                            // dlc, mostrar datos del autor
                             <div>
                                 <h1 className="font-bold">{author.name}</h1>
-                                <p className="text-gray-600 mb-1 mt-1">{author.birthDate}</p>
+                                <p className="text-gray-600 dark:text-gray-400 mb-1 mt-1">{author.birthDate}</p>
                                 <p className="mb-2">{author.description}</p>
                                 <div className="mt-4 flex justify-center">
                                     <Image src={author.image} alt={author.name} width={300} height={300}
@@ -79,21 +90,18 @@ export const AuthorsGrid = () => {
                                 </div>
                                 <div className="mt-6 flex justify-center gap-2">
                                     <button onClick={() => startEdit(author)}
-                                            className="border bg-blue-200 dark:bg-blue-500 font-bold rounded-xl px-4 py-1">
-                                        Editar
+                                            className="border bg-blue-200 dark:bg-blue-500 font-bold rounded-xl px-4 py-1">Editar
                                     </button>
                                     <button
-                                        onClick={async () => {
-                                            await deleteAuthor(author.id)
-                                        }}
-                                        className="border bg-red-400 font-bold rounded-xl px-4 py-1"
-                                    >
-                                        Eliminar
+                                        onClick={()=>deleteButton(author.id)}
+                                        className="border bg-red-400 font-bold rounded-xl px-4 py-1">Eliminar
                                     </button>
 
                                 </div>
                             </div>
                         )}
+
+
                     </div>
                 </div>
             ))}
